@@ -1,19 +1,19 @@
-import { Stack, Link } from 'expo-router';
+import { Redirect } from 'expo-router';
+import { SafeAreaView } from 'react-native';
 
-import { Button } from '~/components/Button';
-import { Container } from '~/components/Container';
-import { ScreenContent } from '~/components/ScreenContent';
+import { useSession } from '~/context/auth';
+import { LoginForm } from '~/modules/login/components/login-form';
 
-export default function Home() {
+export default function Login() {
+  const { session } = useSession();
+
+  if (session) {
+    return <Redirect href="/home" />;
+  }
+
   return (
-    <>
-      <Stack.Screen options={{ title: 'Home' }} />
-      <Container>
-        <ScreenContent path="app/index.tsx" title="Home" />
-        <Link href={{ pathname: '/details', params: { name: 'Dan' } }} asChild>
-          <Button title="Show Details" />
-        </Link>
-      </Container>
-    </>
+    <SafeAreaView className="m-4 flex-1 items-center justify-center gap-4">
+      <LoginForm />
+    </SafeAreaView>
   );
 }
