@@ -141,3 +141,12 @@ function Component() {
 This is a very staight forward way to persist data globally.
 
 # About exercise 1 (Components)
+
+- First of all find out what is the shape of the data you want to handle and compare with the second screen (profile)
+- In web I would separate the navigation in a global layout to share the navbar between the screens by creating a component which handle this.
+- Create a generic component that shares the same data and layout and pass it through props the data you want to share, abstract this one and use it for the iteration.
+- If the data its too expensive, analyze the posibility to memoize the data a with useMemo, and memoize the component with memo()
+
+I couldn't keep up with the given time, hope this knowledge it's enough for you guys, hope you are well whoever is reading this.
+
+Regards!
