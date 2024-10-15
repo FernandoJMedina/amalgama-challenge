@@ -20,7 +20,7 @@ yarn web
 
 # About exercise 2 (State).
 
-Given the requirements I asume that you want to save the data in the browser meaning that you should user local or session storage in web.
+Given the requirements I asume that you want to save the data in the browser meaning that you should use local or session storage in web.
 
 In the side of mobile you can use AsyncStorage or Expo-Secure-Store for sensitive data, also you could use SQLite or Realm or other third party databases.
 
@@ -57,7 +57,7 @@ const Root = () => (
       persister: asyncStoragePersister,
       dehydrateOptions: {
         shouldDehydrateQuery: (query) => {
-          if (query.queryKey[0] === 'posts') {
+          if (query.queryKey[0] === 'users' || query.queryKey[0] === 'books') {
             return true;
           }
 
@@ -74,3 +74,70 @@ export default Root;
 
 - In the case of synchronus data, i prefer to use jotai with MMKV (a x10 times faster than async storage).
   Jotai uses the atom pattern that its pretty much like use useState but globally.
+
+For example:
+
+```js
+import { atomWithStorage, createJSONStorage } from 'jotai/utils';
+import { MMKV } from 'react-native-mmkv';
+
+const storage = new MMKV();
+
+function getItem<T>(key: string): T | null {
+ const value = storage.getString(key);
+ return value ? JSON.parse(value) : null;
+}
+
+function setItem<T>(key: string, value: T): void {
+ storage.set(key, JSON.stringify(value));
+}
+
+function removeItem(key: string): void {
+ storage.delete(key);
+}
+
+function clearAll(): void {
+ storage.clearAll();
+}
+
+export const atomWithMMKV = <T>(key: string, initialValue: T) =>
+ atomWithStorage<T>(
+   key,
+   initialValue,
+   createJSONStorage<T>(() => ({
+     getItem,
+     setItem,
+     removeItem,
+     clearAll,
+   })),
+ );
+```
+
+And then create your custom hook
+
+```js
+import { useAtom } from 'jotai';
+import { atomWithMMKV } from 'atoms/utils/atomWithMMKV';
+
+type BooksResponse = {
+ // ... shape of response
+}
+
+const booksResponse = atomWithMMKV<BooksResponse | null>(
+  'books-response',
+  null,
+);
+
+export function useBooks() {
+  return useAtom(booksResponse);
+}
+
+function Component() {
+  const [books, setBooks] = useBooks()
+  // ...
+}
+```
+
+This is a very staight forward way to persist data globally.
+
+# About exercise 1 (Components)
