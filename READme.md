@@ -73,4 +73,4 @@ export default Root;
 ```
 
 - In the case of synchronus data, i prefer to use jotai with MMKV (a x10 times faster than async storage).
-  Jotai uses the atom patter that its pretty much like use useState but globally.
+  Jotai uses the atom pattern that its pretty much like use useState but globally.
